@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 app.config.from_object('config')
 WORDS = app.config['WORDS']
+SEPARATOR = app.config['SEPARATOR']
 
 dict_games = {}
 counter = 0
@@ -40,7 +41,7 @@ def guess(id, letter):
             guess = guess[:i] + letter + guess[i + 1:]
         game['guess'] = guess
 
-        if '_' not in guess:
+        if SEPARATOR not in guess:
             destroy_game(int(id))
     else:
         game['guesses'] += 1
@@ -59,7 +60,7 @@ def start():
     game = {
         'id': counter,
         'word': word,
-        'guess': '_' * len(word),
+        'guess': SEPARATOR * len(word),
         'guesses': 0
     }
 
