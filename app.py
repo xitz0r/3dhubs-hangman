@@ -18,7 +18,7 @@ def destroy_game(id):
 
 # exports only selected fields
 def game_export(game):
-    return {'id': game['id'], 'guess': game['guess'], 'guesses': game['guesses']}
+    return jsonify({'id': game['id'], 'guess': game['guess'], 'guesses': game['guesses']})
 
 
 @app.route('/guess/<id>/<letter>')
@@ -48,7 +48,7 @@ def guess(id, letter):
             destroy_game(int(id))
             return exceptions.NotAcceptable()
 
-    return jsonify(game_export(game))
+    return game_export(game)
 
 
 @app.route('/start')
@@ -66,7 +66,7 @@ def start():
     dict_games[counter] = game
     counter += 1
 
-    return jsonify(game_export(game))
+    return game_export(game)
 
 
 if __name__ == '__main__':
