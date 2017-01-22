@@ -14,13 +14,18 @@ class Hangman:
         self.game_status = 'ongoing'
 
     def export_json(self):
-        return jsonify({
+        dict = {
             'game_id': self.game_id,
             'guess': self.guess,
             'wrong_guesses': self.wrong_guesses,
             'wrong_letters': self.wrong_letters,
             'game_status': self.game_status
-        })
+        }
+
+        if self.is_game_over():
+            dict['word'] = self.word
+
+        return jsonify(dict)
 
     def guess_letter(self, letter):
         if not self.game_over:
