@@ -15,7 +15,7 @@ counter = 0
 
 @app.route('/guess/<id>/<letter>')
 def guess(id, letter):
-    if not id.isdigit() or len(letter) > 1 or not letter.isalpha():
+    if not id.isdigit() or len(letter) > 1:
         return exceptions.BadRequest()
     elif int(id) >= len(list_games):
         return exceptions.NotFound()
