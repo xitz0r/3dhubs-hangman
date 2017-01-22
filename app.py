@@ -13,7 +13,7 @@ list_games = []
 counter = 0
 
 
-@app.route('/guess/<id>/<letter>')
+@app.route('/guess/<id>/<letter>', methods=['POST'])
 def guess(id, letter):
     if not id.isdigit() or len(letter) > 1:
         return exceptions.BadRequest()
@@ -29,7 +29,7 @@ def guess(id, letter):
     return game.export_json()
 
 
-@app.route('/start')
+@app.route('/start', methods=['POST'])
 def start():
     # creating new game
     game = Hangman(id=len(list_games), word=WORDS[random.randint(0, len(WORDS) - 1)])
