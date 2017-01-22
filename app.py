@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
+from hangman import Hangman
 import random
-import re
 from werkzeug import exceptions
 
 app = Flask(__name__)
@@ -9,65 +9,33 @@ app.config.from_object('config')
 WORDS = app.config['WORDS']
 SEPARATOR = app.config['SEPARATOR']
 
-dict_games = {}
+list_games = []
 counter = 0
-
-
-def destroy_game(id):
-    dict_games.pop(int(id))
-
-
-# exports only selected fields
-def game_export(game):
-    return jsonify({'id': game['id'], 'guess': game['guess'], 'guesses': game['guesses']})
 
 
 @app.route('/guess/<id>/<letter>')
 def guess(id, letter):
     if not id.isdigit() or len(letter) > 1 or not letter.isalpha():
         return exceptions.BadRequest()
-    elif int(id) not in dict_games.keys():
+    elif int(id) >= len(list_games):
         return exceptions.NotFound()
 
-    game = dict_games[int(id)]
-    word = game['word']
+    game = list_games[int(id)]
 
-    if letter in game['guess']:
-        pass
-    elif letter in word:
-        indexes = [c.start() for c in re.finditer(letter, word)]
-        guess = game['guess']
-        for i in indexes:
-            guess = guess[:i] + letter + guess[i + 1:]
-        game['guess'] = guess
+    if game.is_game_over():
+        return exceptions.NotAcceptable()
+    game.guess_letter(letter)
 
-        if SEPARATOR not in guess:
-            destroy_game(int(id))
-    else:
-        game['guesses'] += 1
-        if game['guesses'] >= 5:
-            destroy_game(int(id))
-            return exceptions.NotAcceptable()
-
-    return game_export(game)
+    return game.export_json()
 
 
 @app.route('/start')
 def start():
-    global counter  # it seems by default flask is single threaded, so this won't be a problem
+    # creating new game
+    game = Hangman(id=len(list_games), word=WORDS[random.randint(0, len(WORDS) - 1)])
+    list_games.append(game)
 
-    word = WORDS[random.randint(0, len(WORDS) - 1)]
-    game = {
-        'id': counter,
-        'word': word,
-        'guess': SEPARATOR * len(word),
-        'guesses': 0
-    }
-
-    dict_games[counter] = game
-    counter += 1
-
-    return game_export(game)
+    return game.export_json()
 
 
 if __name__ == '__main__':
