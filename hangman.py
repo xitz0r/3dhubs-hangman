@@ -11,13 +11,15 @@ class Hangman:
         self.wrong_guesses = 0
         self.wrong_letters = []
         self.game_over = False
+        self.game_status = 'ongoing'
 
     def export_json(self):
         return jsonify({
             'id': self.id,
             'guess': self.guess,
             'wrong_guesses': self.wrong_guesses,
-            'wrong_letters': self.wrong_letters
+            'wrong_letters': self.wrong_letters,
+            'game_status': self.game_status
         })
 
     def guess_letter(self, letter):
@@ -28,11 +30,15 @@ class Hangman:
                 indexes = [c.start() for c in re.finditer(letter, self.word)]
                 for i in indexes:
                     self.guess = self.guess[:i] + letter + self.guess[i + 1:]
+                if self.separator not in self.guess:
+                    self.game_over = True
+                    self.game_status = 'game won'
             else:
                 self.wrong_guesses += 1
                 self.wrong_letters.append(letter)
                 if self.wrong_guesses >= 5:
                     self.game_over = True
+                    self.game_status = 'game lost'
 
     def is_game_over(self):
         return self.game_over
