@@ -44,6 +44,7 @@ def start():
 
     return game.export_json()
 
+
 @app.route('/documentation')
 @app.route('/')
 def documentation():
