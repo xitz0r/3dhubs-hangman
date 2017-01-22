@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from hangman import Hangman
 import random
 from werkzeug import exceptions
@@ -10,7 +10,6 @@ WORDS = app.config['WORDS']
 SEPARATOR = app.config['SEPARATOR']
 
 list_games = []
-counter = 0
 
 
 @app.route('/guess/<id>/<letter>', methods=['POST'])
