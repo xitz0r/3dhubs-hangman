@@ -24,7 +24,7 @@ def guess(game_id, letter):
     elif int(game_id) >= len(list_games):
         return exceptions.NotFound()
 
-    game = list_games[int(id)]
+    game = list_games[int(game_id)]
 
     if game.is_game_over():
         return exceptions.NotAcceptable()
@@ -39,7 +39,7 @@ def start():
     '''Creates a new game and returns its game_id'''
 
     # creating new game
-    game = Hangman(id=len(list_games), word=WORDS[random.randint(0, len(WORDS) - 1)])
+    game = Hangman(game_id=len(list_games), word=WORDS[random.randint(0, len(WORDS) - 1)])
     list_games.append(game)
 
     return game.export_json()

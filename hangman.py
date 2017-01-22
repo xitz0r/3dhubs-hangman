@@ -4,7 +4,7 @@ import re
 
 class Hangman:
     def __init__(self, game_id, word):
-        self.game_id = id
+        self.game_id = game_id
         self.word = word
         self.separator = current_app.config['SEPARATOR']
         self.guess = self.separator * len(word)
