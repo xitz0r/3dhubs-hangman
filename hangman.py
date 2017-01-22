@@ -3,8 +3,8 @@ import re
 
 
 class Hangman:
-    def __init__(self, id, word):
-        self.id = id
+    def __init__(self, game_id, word):
+        self.game_id = id
         self.word = word
         self.separator = current_app.config['SEPARATOR']
         self.guess = self.separator * len(word)
@@ -15,7 +15,7 @@ class Hangman:
 
     def export_json(self):
         return jsonify({
-            'id': self.id,
+            'game_id': self.game_id,
             'guess': self.guess,
             'wrong_guesses': self.wrong_guesses,
             'wrong_letters': self.wrong_letters,

@@ -1,9 +1,11 @@
 from flask import Flask
+from flask_autodoc import Autodoc
 from hangman import Hangman
 import random
 from werkzeug import exceptions
 
 app = Flask(__name__)
+auto = Autodoc(app)
 
 app.config.from_object('config')
 WORDS = app.config['WORDS']
@@ -12,11 +14,14 @@ SEPARATOR = app.config['SEPARATOR']
 list_games = []
 
 
-@app.route('/guess/<id>/<letter>', methods=['POST'])
-def guess(id, letter):
-    if not id.isdigit() or len(letter) > 1:
+@app.route('/guess/<game_id>/<letter>', methods=['POST'])
+@auto.doc()
+def guess(game_id, letter):
+    '''Guesses a letter in the game_id game and returns its object'''
+
+    if not game_id.isdigit() or len(letter) > 1:
         return exceptions.BadRequest()
-    elif int(id) >= len(list_games):
+    elif int(game_id) >= len(list_games):
         return exceptions.NotFound()
 
     game = list_games[int(id)]
@@ -29,12 +34,19 @@ def guess(id, letter):
 
 
 @app.route('/start', methods=['POST'])
+@auto.doc()
 def start():
+    '''Creates a new game and returns its game_id'''
+
     # creating new game
     game = Hangman(id=len(list_games), word=WORDS[random.randint(0, len(WORDS) - 1)])
     list_games.append(game)
 
     return game.export_json()
+
+@app.route('/documentation')
+def documentation():
+    return auto.html()
 
 
 if __name__ == '__main__':
