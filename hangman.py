@@ -8,14 +8,14 @@ class Hangman:
         self.word = word
         self.separator = current_app.config['SEPARATOR']
         self.guess = self.separator * len(word)
-        self.guesses = 0
+        self.wrong_guesses = 0
         self.game_over = False
 
     def export_json(self):
         return jsonify({
             'id': self.id,
             'guess': self.guess,
-            'guesses': self.guesses
+            'wrong_guesses': self.wrong_guesses
         })
 
     def guess_letter(self, letter):
@@ -27,8 +27,8 @@ class Hangman:
                 for i in indexes:
                     self.guess = self.guess[:i] + letter + self.guess[i + 1:]
             else:
-                self.guesses += 1
-                if self.guesses >= 5:
+                self.wrong_guesses += 1
+                if self.wrong_guesses >= 5:
                     self.game_over = True
 
     def is_game_over(self):
